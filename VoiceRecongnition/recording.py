@@ -17,7 +17,7 @@ p = pyaudio.PyAudio()
 commands = ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", "happy", \
     "house", "learn", "left",  "marvin", "nine", "no", "off", "on", "one", "right", "seven", "sheila", "six", "stop", \
         "three", "tree", "two", "up", "visual", "wow", "yes", "zero"]
-os.chdir(r"C:\Users\s8gre\Documents\Schule\KerasProjects\VoiceRecongnition")
+os.chdir(r"A:\AI_sound_recognition\Versuch2\KerasProjects\VoiceRecongnition")
 loaded_model = tf.saved_model.load(".\AI\data\save")
 
 
