@@ -2,7 +2,7 @@ import pyaudio
 import numpy as np
 import os
 import numpy as np
-
+import game as g
 import tensorflow as tf
 
 from audio_converting import preprocess_audiobuffer
@@ -14,9 +14,7 @@ CHANNELS = 1
 RATE = 16000
 limit = 50
 p = pyaudio.PyAudio()
-commands = ["backward", "bed", "bird", "cat", "dog", "down", "eight", "five", "follow", "forward", "four", "go", "happy", \
-    "house", "learn", "left",  "marvin", "nine", "no", "off", "on", "one", "right", "seven", "sheila", "six", "stop", \
-        "three", "tree", "two", "up", "visual", "wow", "yes", "zero"]
+commands = ["down","go","left", "right", "stop", "up" ]
 os.chdir(r"A:\AI_sound_recognition\Versuch2\KerasProjects\VoiceRecongnition")
 loaded_model = tf.saved_model.load(".\AI\data\save")
 
@@ -35,9 +33,11 @@ def record_audio():
         audio_data = np.fromstring(data, dtype=np.int16)
         if np.abs(audio_data).mean() > limit:
             buffer = np.frombuffer(data, dtype=np.int16)
-            command = predict_mic(buffer)
-            if command == "stop": 
-                break
+            command, percentage = predict_mic(buffer)
+            if percentage > 0.95:
+                g.move_turtle(command)
+                if command == "stop": 
+                    break
         else:
             print("Not talking")
    
@@ -50,7 +50,7 @@ def predict_mic(audio):
     prediction = loaded_model(spec)
     label_pred = np.argmax(prediction["predictions"], axis=1)
     command = commands[label_pred[0]]
-    print("Predicted label:", command)
-    return command
+    percentage = prediction["predictions"][0][label_pred[0]]
+    return command, percentage
 
 record_audio()
